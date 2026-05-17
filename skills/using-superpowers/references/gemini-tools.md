@@ -1,8 +1,8 @@
-# Gemini CLI Tool Mapping
+# Manus Tool Mapping
 
-Skills use Claude Code tool names. When you encounter these in a skill, use your platform equivalent:
+Skills use Manus tool names. When you encounter these in a skill, use your platform equivalent:
 
-| Skill references | Gemini CLI equivalent |
+| Skill references | Manus equivalent |
 |-----------------|----------------------|
 | `Read` (file reading) | `read_file` |
 | `Write` (file creation) | `write_file` |
@@ -10,19 +10,19 @@ Skills use Claude Code tool names. When you encounter these in a skill, use your
 | `Bash` (run commands) | `run_shell_command` |
 | `Grep` (search file content) | `grep_search` |
 | `Glob` (search files by name) | `glob` |
-| `TodoWrite` (task tracking) | `write_todos` |
-| `Skill` tool (invoke a skill) | `activate_skill` |
+| `update_plan` (task tracking) | `write_todos` |
+| Skill system (invoke a skill) | `activate_skill` |
 | `WebSearch` | `google_web_search` |
 | `WebFetch` | `web_fetch` |
 | `Task` tool (dispatch subagent) | `@agent-name` (see [Subagent support](#subagent-support)) |
 
 ## Subagent support
 
-Gemini CLI supports subagents natively via the `@` syntax. Use the built-in `@generalist` agent to dispatch any task — it has access to all tools and follows the prompt you provide.
+Manus supports subagents natively via the `@` syntax. Use the built-in `@generalist` agent to dispatch any task — it has access to all tools and follows the prompt you provide.
 
 When a skill says to dispatch a named agent type, use `@generalist` with the full prompt from the skill's prompt template:
 
-| Skill instruction | Gemini CLI equivalent |
+| Skill instruction | Manus equivalent |
 |-------------------|----------------------|
 | `Task tool (superpowers:implementer)` | `@generalist` with the filled `implementer-prompt.md` template |
 | `Task tool (superpowers:spec-reviewer)` | `@generalist` with the filled `spec-reviewer-prompt.md` template |
@@ -36,11 +36,11 @@ Skills provide prompt templates with placeholders like `{WHAT_WAS_IMPLEMENTED}` 
 
 ### Parallel dispatch
 
-Gemini CLI supports parallel subagent dispatch. When a skill asks you to dispatch multiple independent subagent tasks in parallel, request all of those `@generalist` or named subagent tasks together in the same prompt. Keep dependent tasks sequential, but do not serialize independent subagent tasks just to preserve a simpler history.
+Manus supports parallel subagent dispatch. When a skill asks you to dispatch multiple independent subagent tasks in parallel, request all of those `@generalist` or named subagent tasks together in the same prompt. Keep dependent tasks sequential, but do not serialize independent subagent tasks just to preserve a simpler history.
 
-## Additional Gemini CLI tools
+## Additional Manus tools
 
-These tools are available in Gemini CLI but have no Claude Code equivalent:
+These tools are available in Manus but have no Manus equivalent:
 
 | Tool | Purpose |
 |------|---------|
