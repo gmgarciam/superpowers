@@ -1,3 +1,72 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Development Commands
+
+### Testing
+
+```bash
+# Run all fast tests (~2 minutes each)
+cd tests/claude-code && ./run-skill-tests.sh
+
+# Run integration tests (10–30 minutes, require real Claude sessions)
+cd tests/claude-code && ./run-skill-tests.sh --integration
+
+# Run a specific test
+cd tests/claude-code && ./run-skill-tests.sh --test test-subagent-driven-development.sh
+
+# Verbose output (shows full Claude output on failure)
+cd tests/claude-code && ./run-skill-tests.sh --verbose
+
+# Brainstorm server tests
+cd tests/brainstorm-server && node server.test.js
+```
+
+Integration tests require: Claude Code CLI in PATH, and `"superpowers@superpowers-dev": true` in `~/.claude/settings.json`.
+
+### Version Management
+
+```bash
+# Check current versions across all plugin manifests
+./scripts/bump-version.sh --check
+
+# Bump to a new version (updates package.json + all plugin manifests)
+./scripts/bump-version.sh X.Y.Z
+
+# Audit for version strings in undeclared files
+./scripts/bump-version.sh --audit
+```
+
+Version is tracked across six files (see `.version-bump.json`): `package.json`, `.claude-plugin/plugin.json`, `.cursor-plugin/plugin.json`, `.codex-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `gemini-extension.json`.
+
+## Architecture
+
+### Skills
+
+Skills live in `skills/<name>/SKILL.md`. Each is a markdown document loaded on demand via the `Skill` tool — never read directly with file tools. Skills are the core behavioral artifact of this project.
+
+### Bootstrap (how skills activate automatically)
+
+`hooks/session-start` is the entry point. It is run by the harness at session start (via `hooks/hooks.json`), reads `skills/using-superpowers/SKILL.md`, and injects its full content into the agent context as `additionalContext`. This is what causes skills to auto-trigger — without this bootstrap, skills are inert files.
+
+The hook detects the current platform by checking environment variables (`CURSOR_PLUGIN_ROOT`, `CLAUDE_PLUGIN_ROOT`, `COPILOT_CLI`) and emits the response in the format each harness expects.
+
+### Multi-harness Plugin Manifests
+
+Each supported harness has its own plugin manifest:
+- `.claude-plugin/plugin.json` — Claude Code
+- `.cursor-plugin/plugin.json` — Cursor
+- `.codex-plugin/plugin.json` — Codex CLI/App
+- `.opencode/plugins/superpowers.js` — OpenCode (JS-based, not JSON)
+- `gemini-extension.json` — Gemini CLI
+
+### Test Architecture
+
+Integration tests (`tests/claude-code/`) run Claude Code in headless mode (`claude -p`) and verify behavior by parsing the resulting `.jsonl` session transcript in `~/.claude/projects/`. Tests do NOT grep Claude's text output — they inspect tool call structure in the transcript. Token analysis is available via `tests/claude-code/analyze-token-usage.py`.
+
+---
+
 # Superpowers — Contributor Guidelines
 
 ## If You Are an AI Agent
